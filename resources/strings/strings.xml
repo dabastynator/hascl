@@ -1,0 +1,12 @@
+<strings>
+    <string id="AppName">Home Assistant</string>
+    <string id="version">Version</string>
+
+    <string id="Scenes">Scenes</string>
+    <string id="Areas">Areas</string>
+    <string id="Switches">Switches</string>
+    <string id="User">User</string>
+    
+    <string id="endpoint">End Point</string>
+    <string id="token">Long-Lived Access Token</string>
+</strings>

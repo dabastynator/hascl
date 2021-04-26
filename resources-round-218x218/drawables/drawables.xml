@@ -1,0 +1,8 @@
+<drawables>
+    <bitmap id="LauncherIcon" filename="hass_small.png" />
+    <bitmap id="hass" filename="hass.png" />
+    <bitmap id="switches" filename="switches.png" />
+    <bitmap id="user" filename="user.png" />
+    <bitmap id="exit_door" filename="exit_door.png" />
+    <bitmap id="paint_pallet" filename="paint_pallet.png" />
+</drawables>
