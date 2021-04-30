@@ -9,4 +9,8 @@
     
     <string id="endpoint">End Point</string>
     <string id="token">Long-Lived Access Token</string>
+    
+    <string id="legacy_endpoint">Legacy Home End Point (optional)</string>
+    <string id="legacy_token">Legacy Access Token (optional)</string>
+    <string id="legacy_musicunit">Legacy Music Unit (optional)</string>
 </strings>
