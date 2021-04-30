@@ -4,9 +4,12 @@ using Toybox.Graphics;
 
 class HasclApp extends Application.AppBase {
 
+	var mCaller;
+
 	function initialize()
 	{
 		AppBase.initialize();
+		mCaller = new WebCaller();
 	}
 
 	// onStart() is called on application start up
@@ -21,12 +24,37 @@ class HasclApp extends Application.AppBase {
 	
 	function showSwitches(code, data)
 	{
+		if (data instanceof Array)
+		{
+			var menu = new WatchUi.Menu2({:title=>"Switches"});
+			var delegate = new SwitchDelegate();
+			for (var i = 0; i < data.size(); i++)
+			{
+				var rSwitch = data[i];
+				if (rSwitch instanceof Dictionary)
+				{
+					var entity = rSwitch["entity_id"].substring(0, 6);
+					if ("switch".equals(entity) || "light.".equals(entity))
+					{
+						menu.addItem(
+							new WatchUi.ToggleMenuItem(
+								rSwitch["attributes"]["friendly_name"],
+								"",
+								rSwitch["entity_id"],
+								"on".equals(rSwitch["state"]),
+								{}
+							)
+						);
+					}
+				}
+			}
+			WatchUi.pushView( menu, delegate, WatchUi.SLIDE_UP);
+		}
 	}
 	
 	function toSwitches()
 	{
-		var caller = new WebCaller();
-		caller.call("/switch/list", method(:showSwitches));
+		mCaller.get("/api/states", method(:showSwitches));
 	}
 	
 	function showUser(code, data)
@@ -63,13 +91,12 @@ class HasclApp extends Application.AppBase {
 	
 	function toUser()
 	{
-		var caller = new WebCaller();
-		caller.get("/api/states", method(:showUser));
+		mCaller.get("/api/states", method(:showUser));
 	}
 	
 	function showScenes(code, data)
 	{
-	if (data instanceof Array)
+		if (data instanceof Array)
 		{
 			var menu = new WatchUi.Menu2({:title=>"Scenes"});
 			var delegate = new SceneDelegate();
@@ -98,8 +125,7 @@ class HasclApp extends Application.AppBase {
 	
 	function toScene()
 	{
-		var caller = new WebCaller();
-		caller.get("/api/states", method(:showScenes));
+		mCaller.get("/api/states", method(:showScenes));
 	}
 	
 	function toAreas()
