@@ -5,4 +5,12 @@
     <bitmap id="user" filename="user.png" />
     <bitmap id="exit_door" filename="exit_door.png" />
     <bitmap id="paint_pallet" filename="paint_pallet.png" />
+    <bitmap id="headphone" filename="headphone.png" />
+    <bitmap id="playlist" filename="playlist.png" />
+    <bitmap id="play" filename="play.png" />
+    <bitmap id="pause" filename="pause.png" />
+    <bitmap id="stop" filename="stop.png" />
+    <bitmap id="next" filename="next.png" />
+    <bitmap id="vol_down" filename="vol_down.png" />
+    <bitmap id="vol_up" filename="vol_up.png" />
 </drawables>
