@@ -5,11 +5,13 @@ using Toybox.Graphics;
 class HasclApp extends Application.AppBase {
 
 	var mCaller;
+	var mLegacyCaller;
 
 	function initialize()
 	{
 		AppBase.initialize();
 		mCaller = new WebCaller();
+		mLegacyCaller = new LegacyWebCaller();
 	}
 
 	// onStart() is called on application start up
@@ -128,8 +130,41 @@ class HasclApp extends Application.AppBase {
 		mCaller.get("/api/states", method(:showScenes));
 	}
 	
-	function toAreas()
+	function showPlaylists(code, data)
 	{
+		if ((data instanceof Array) and (data.size() > 0))
+		{
+			var menu = new WatchUi.Menu2({:title=>"Playlists"});
+			var delegate = new PlaylistDelegate();
+			for (var i = 0; i < data.size(); i++) {
+				var playlist = data[i];
+				if (playlist instanceof Dictionary)
+				{
+					menu.addItem(
+						new WatchUi.MenuItem(
+							playlist["name"],
+							"",
+							playlist["name"],
+							{}
+						)
+					);
+				}
+			}
+			WatchUi.pushView( menu, delegate, WatchUi.SLIDE_UP);
+		}
+	}
+	
+	function toPlaylists()
+	{
+		var caller = new WebCaller();
+		var music = Properties.getValue("legacy_musicunit");
+		mLegacyCaller.call("/mediaserver/playlists", "id=" + music, method(:showPlaylists));
+	}
+	
+	function toMusic()
+	{
+		var view = new MusicView();
+		WatchUi.pushView(view, new MusicDelegate(view), WatchUi.SLIDE_UP);
 	}
 
 	// Return the initial view of your application here
@@ -140,9 +175,13 @@ class HasclApp extends Application.AppBase {
 		view.setLineColor(0x3eb7ed);
 		view.setCenter(Rez.Drawables.hass);
 		view.addButton(Rez.Drawables.user, method(:toUser));
+		if (mLegacyCaller.isValid())
+		{
+			view.addButton(Rez.Drawables.playlist, method(:toPlaylists));
+			view.addButton(Rez.Drawables.headphone, method(:toMusic));
+		}
 		view.addButton(Rez.Drawables.paint_pallet, method(:toScene));
 		view.addButton(Rez.Drawables.switches, method(:toSwitches));
-		view.addButton(Rez.Drawables.exit_door, method(:toAreas));
 		return [ view, view.getDelegate() ];
 	}
 
