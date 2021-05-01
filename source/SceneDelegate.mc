@@ -18,8 +18,14 @@ class SceneDelegate extends WatchUi.Menu2InputDelegate {
 	
 	function onSelect(item)
 	{
-		mCaller.setParameter({"entity_id" => item.getId()});
-		mCaller.post("/api/services/scene/turn_on", method(:close));
+		if("clear_cached_scenes".equals(item.getId()))
+		{
+			Application.Storage.deleteValue("scene_cache");
+			WatchUi.popView(WatchUi.SLIDE_LEFT);
+		} else {
+			mCaller.setParameter({"entity_id" => item.getId()});
+			mCaller.post("/api/services/scene/turn_on", method(:close));
+		}
 	}
 
 }

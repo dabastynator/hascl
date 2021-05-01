@@ -96,38 +96,64 @@ class HasclApp extends Application.AppBase {
 		mCaller.get("/api/states", method(:showUser));
 	}
 	
-	function showScenes(code, data)
+	function showScenes(scenes)
+	{
+		var menu = new WatchUi.Menu2({:title=>"Scenes"});
+		var delegate = new SceneDelegate();
+		for (var i = 0; i < scenes.size(); i++)
+		{
+			var scene = scenes[i];
+			menu.addItem(
+				new WatchUi.MenuItem(
+					scene["name"],
+					"",
+					scene["id"],
+					{}
+				)
+			);
+		}
+		menu.addItem(
+				new WatchUi.MenuItem(
+					"<Clear cached Scenes>",
+					"",
+					"clear_cached_scenes",
+					{}
+				)
+			);
+		WatchUi.pushView( menu, delegate, WatchUi.SLIDE_UP);
+	}
+	
+	function readScenes(code, data)
 	{
 		if (data instanceof Array)
 		{
-			var menu = new WatchUi.Menu2({:title=>"Scenes"});
-			var delegate = new SceneDelegate();
+			var scenes = [];
 			for (var i = 0; i < data.size(); i++)
 			{
-				var rScene = data[i];
-				if (rScene instanceof Dictionary)
+				var scene = data[i];
+				if (scene instanceof Dictionary)
 				{
-					var entity = rScene["entity_id"].substring(0, 6);
+					var entity = scene["entity_id"].substring(0, 6);
 					if ("scene.".equals(entity))
 					{
-						menu.addItem(
-							new WatchUi.MenuItem(
-								rScene["attributes"]["friendly_name"],
-								"",
-								rScene["entity_id"],
-								{}
-							)
-						); 
+						scenes.add({"name" => scene["attributes"]["friendly_name"], "id" => scene["entity_id"]});
 					}
 				}
 			}
-			WatchUi.pushView( menu, delegate, WatchUi.SLIDE_UP);
+			Application.Storage.setValue("scene_cache", scenes);
+			showScenes(scenes);
 		}
 	}
 	
 	function toScene()
 	{
-		mCaller.get("/api/states", method(:showScenes));
+		var scenes = Application.Storage.getValue("scene_cache");
+		if(scenes != null)
+		{
+			showScenes(scenes);
+		} else {
+			mCaller.get("/api/states", method(:readScenes));
+		}
 	}
 	
 	function showPlaylists(code, data)
