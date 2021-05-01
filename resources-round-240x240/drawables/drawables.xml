@@ -3,7 +3,6 @@
     <bitmap id="hass" filename="hass.png" />
     <bitmap id="switches" filename="switches.png" />
     <bitmap id="user" filename="user.png" />
-    <bitmap id="exit_door" filename="exit_door.png" />
     <bitmap id="paint_pallet" filename="paint_pallet.png" />
     <bitmap id="headphone" filename="headphone.png" />
     <bitmap id="playlist" filename="playlist.png" />
