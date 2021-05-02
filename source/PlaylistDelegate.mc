@@ -42,8 +42,14 @@ class PlaylistDelegate extends WatchUi.Menu2InputDelegate {
 	
 	function onSelect(item)
 	{
-		var encoded = stringReplace(item.getId(), " ", "%20");
-		mCaller.call("/mediaserver/play_playlist", "playlist=" + encoded, method(:setPlaylist));
+		if("clear_cached_scenes".equals(item.getId()))
+		{
+			Application.Storage.deleteValue("playlist_cache");
+			WatchUi.popView(WatchUi.SLIDE_LEFT);
+		} else {
+			var encoded = stringReplace(item.getId(), " ", "%20");
+			mCaller.call("/mediaserver/play_playlist", "playlist=" + encoded, method(:setPlaylist));
+		}
 	}
 
 }

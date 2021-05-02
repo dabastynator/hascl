@@ -24,39 +24,64 @@ class HasclApp extends Application.AppBase {
 	{
 	}
 	
-	function showSwitches(code, data)
+	function showSwitchesLights(switches, lights)
+	{
+		var menu = new WatchUi.Menu2({:title=>"Switches"});
+		var delegate = new SwitchDelegate();
+		for (var i = 0; i < switches.size(); i++)
+		{
+			var s = switches[i];
+			menu.addItem(new WatchUi.ToggleMenuItem(s["name"], "", s["id"], s["state"], {}));
+		}
+		for (var i = 0; i < lights.size(); i++)
+		{
+			var s = lights[i];
+			menu.addItem(new WatchUi.ToggleMenuItem(s["name"], "", s["id"], s["state"], {}));
+		}
+		menu.addItem(new WatchUi.MenuItem("<clear cache>", "", "clear_cached_scenes", {}));
+		WatchUi.pushView( menu, delegate, WatchUi.SLIDE_UP);
+	}
+	
+	function readSwitchesLights(code, data)
 	{
 		if (data instanceof Array)
 		{
-			var menu = new WatchUi.Menu2({:title=>"Switches"});
-			var delegate = new SwitchDelegate();
+			var switches = [];
+			var lights = [];
 			for (var i = 0; i < data.size(); i++)
 			{
-				var rSwitch = data[i];
-				if (rSwitch instanceof Dictionary)
+				var entity = data[i];
+				if (entity instanceof Dictionary)
 				{
-					var entity = rSwitch["entity_id"].substring(0, 6);
-					if ("switch".equals(entity) || "light.".equals(entity))
+					var id = entity["entity_id"].substring(0, 6);
+					if ("switch".equals(id))
 					{
-						menu.addItem(
-							new WatchUi.ToggleMenuItem(
-								rSwitch["attributes"]["friendly_name"],
-								"",
-								rSwitch["entity_id"],
-								"on".equals(rSwitch["state"]),
-								{}
-							)
-						);
+						switches.add({"name" => entity["attributes"]["friendly_name"],
+							"id" => entity["entity_id"],
+							"state" => "on".equals(entity["state"])});
+					} else if ("light.".equals(id)) {
+						lights.add({"name" => entity["attributes"]["friendly_name"],
+							"id" => entity["entity_id"],
+							"state" => "on".equals(entity["state"])});
 					}
 				}
 			}
-			WatchUi.pushView( menu, delegate, WatchUi.SLIDE_UP);
+			Application.Storage.setValue("switch_cache", switches);
+			Application.Storage.setValue("light_cache", lights);
+			showSwitchesLights(switches, lights);
 		}
 	}
 	
 	function toSwitches()
 	{
-		mCaller.get("/api/states", method(:showSwitches));
+		var switches = Application.Storage.getValue("switch_cache");
+		var lights = Application.Storage.getValue("light_cache");
+		if(switches == null || lights == null)
+		{
+			mCaller.get("/api/states", method(:readSwitchesLights));
+		} else {
+			showSwitchesLights(switches, lights);
+		}
 	}
 	
 	function showUser(code, data)
@@ -112,14 +137,7 @@ class HasclApp extends Application.AppBase {
 				)
 			);
 		}
-		menu.addItem(
-				new WatchUi.MenuItem(
-					"<Clear cached Scenes>",
-					"",
-					"clear_cached_scenes",
-					{}
-				)
-			);
+		menu.addItem(new WatchUi.MenuItem("<clear cache>", "", "clear_cached_scenes", {}));
 		WatchUi.pushView( menu, delegate, WatchUi.SLIDE_UP);
 	}
 	
@@ -156,35 +174,46 @@ class HasclApp extends Application.AppBase {
 		}
 	}
 	
-	function showPlaylists(code, data)
+	function showPlaylists(playlists)
+	{
+		var menu = new WatchUi.Menu2({:title=>"Playlists"});
+		var delegate = new PlaylistDelegate();
+		for (var i = 0; i < playlists.size(); i++)
+		{
+			var pls = playlists[i];
+			menu.addItem(new WatchUi.MenuItem(pls["name"], "", pls["name"], {}));
+		}
+		menu.addItem(new WatchUi.MenuItem("<clear cache>", "", "clear_cached_scenes", {}));
+		WatchUi.pushView( menu, delegate, WatchUi.SLIDE_UP);
+	}
+	
+	function readPlaylists(code, data)
 	{
 		if ((data instanceof Array) and (data.size() > 0))
 		{
-			var menu = new WatchUi.Menu2({:title=>"Playlists"});
-			var delegate = new PlaylistDelegate();
+			var playlists = [];
 			for (var i = 0; i < data.size(); i++) {
 				var playlist = data[i];
 				if (playlist instanceof Dictionary)
 				{
-					menu.addItem(
-						new WatchUi.MenuItem(
-							playlist["name"],
-							"",
-							playlist["name"],
-							{}
-						)
-					);
+					playlists.add({"name" => playlist["name"]});
 				}
 			}
-			WatchUi.pushView( menu, delegate, WatchUi.SLIDE_UP);
+			Application.Storage.setValue("playlist_cache", playlists);
+			showPlaylists(playlists);
 		}
 	}
 	
 	function toPlaylists()
 	{
-		var caller = new WebCaller();
-		var music = Properties.getValue("legacy_musicunit");
-		mLegacyCaller.call("/mediaserver/playlists", "id=" + music, method(:showPlaylists));
+		var playlists = Application.Storage.getValue("playlist_cache");
+		if(playlists != null)
+		{
+			showPlaylists(playlists);
+		} else {
+			var music = Properties.getValue("legacy_musicunit");
+			mLegacyCaller.call("/mediaserver/playlists", "id=" + music, method(:readPlaylists));
+		}
 	}
 	
 	function toMusic()
