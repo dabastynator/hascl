@@ -1,6 +1,7 @@
 <drawables>
     <bitmap id="LauncherIcon" filename="hass_small.png" />
     <bitmap id="hass" filename="hass.png" />
+    <bitmap id="kodi" filename="kodi.png" />
     <bitmap id="switches" filename="switches.png" />
     <bitmap id="user" filename="user.png" />
     <bitmap id="paint_pallet" filename="paint_pallet.png" />
@@ -12,4 +13,11 @@
     <bitmap id="next" filename="next.png" />
     <bitmap id="vol_down" filename="vol_down.png" />
     <bitmap id="vol_up" filename="vol_up.png" />
+    <bitmap id="up" filename="up.png" />
+    <bitmap id="down" filename="down.png" />
+    <bitmap id="left" filename="left.png" />
+    <bitmap id="right" filename="right.png" />
+    <bitmap id="enter" filename="enter.png" />
+    <bitmap id="back" filename="back.png" />
+    <bitmap id="forth" filename="forth.png" />
 </drawables>
