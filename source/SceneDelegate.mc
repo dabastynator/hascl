@@ -13,7 +13,8 @@ class SceneDelegate extends WatchUi.Menu2InputDelegate {
 	
 	function close(code, data)
 	{
-		WatchUi.popView(WatchUi.SLIDE_LEFT);
+		// If view was already closed by user, a popVew causes an hard crash of the watch 
+		// WatchUi.popView(WatchUi.SLIDE_LEFT);
 	}
 	
 	function onSelect(item)

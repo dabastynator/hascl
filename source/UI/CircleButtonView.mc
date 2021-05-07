@@ -4,6 +4,7 @@ using Toybox.Graphics;
 class CircleButtonDelegate extends WatchUi.BehaviorDelegate {
 
 	var mCallbacks = [];
+	var mCenterCallback = null;
 	var mView = null;
 
 	function initialize(view)
@@ -39,17 +40,23 @@ class CircleButtonDelegate extends WatchUi.BehaviorDelegate {
 	function onTap (event)
 	{
 		var coords = event.getCoordinates();
+		coords[0] = coords[0] - mView.Width / 2;
+		coords[1] = coords[1] - mView.Height / 2;
 		var maxDot = 0;
 		var callback = null;
 		for (var i = 0; i < mCallbacks.size(); i++) {
 			var sin = Math.sin(2*i*Math.PI / mCallbacks.size());
 			var cos = -Math.cos(2*i*Math.PI / mCallbacks.size());
-			var dot = sin * (coords[0] - mView.Width / 2) + cos * (coords[1] - mView.Height / 2);
+			var dot = sin * coords[0] + cos * coords[1];
 			if (dot > maxDot)
 			{
 				maxDot = dot;
 				callback = mCallbacks[i];
 			}
+		}
+		if (Math.sqrt(coords[0]*coords[0] + coords[1]*coords[1]) < mView.Width / 5)
+		{
+			callback = mCenterCallback;
 		}
 		if (callback != null)
 		{
@@ -130,9 +137,10 @@ class CircleButtonView extends WatchUi.View {
 		mDelegate.addCallback(callback);
 	}
 	// Set a resource like Rez.Drawables.id_monkey
-	function setCenter(resource)
+	function setCenter(resource, callback)
 	{
 		mCenterImage = WatchUi.loadResource( resource );
+		mDelegate.mCenterCallback = callback;
 	}
 
 	function onShow()

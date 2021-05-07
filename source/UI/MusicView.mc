@@ -207,40 +207,10 @@ class MusicView extends WatchUi.View {
 		WatchUi.requestUpdate();
 	}
 
-	function onUpdateMusic(code, data)
+	function setContent(artist, title, playing)
 	{
-		var artist = "---";
-		var title = "---";
-		mButtons[1].visible(true);
-		mButtons[2].visible(false);
-		var current = null;
-		if ((data instanceof Array) and (data.size() > 0))
-		{
-			var media = data[0];
-			if (media instanceof Dictionary)
-			{
-				current = media["current_playing"];
-			}
-		} else {
-			current = data;
-		}
-		if (current instanceof Dictionary)
-		{
-			if (current["artist"] != null)
-			{
-				artist = current["artist"];
-			}
-			if (current["title"] != null)
-			{
-				title = current["title"];
-			}
-			if ("PLAY".equals(current["state"]))
-			{
-				mButtons[1].visible(false);
-				mButtons[2].visible(true);
-			}
-			setVolume(current["volume"]);
-		}
+		mButtons[1].visible(playing);
+		mButtons[2].visible(!playing);
 		if (WatchUi has :cancelAllAnimations)
 		{
 			WatchUi.cancelAllAnimations();

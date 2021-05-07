@@ -6,12 +6,14 @@ class HasclApp extends Application.AppBase {
 
 	var mCaller;
 	var mLegacyCaller;
+	var mKodiCaller;
 
 	function initialize()
 	{
 		AppBase.initialize();
 		mCaller = new WebCaller();
 		mLegacyCaller = new LegacyWebCaller();
+		mKodiCaller = new KodiWebCaller();
 	}
 
 	// onStart() is called on application start up
@@ -219,7 +221,70 @@ class HasclApp extends Application.AppBase {
 	function toMusic()
 	{
 		var view = new MusicView();
-		WatchUi.pushView(view, new MusicDelegate(view), WatchUi.SLIDE_UP);
+		WatchUi.pushView(view, new LegacyMusicDelegate(view), WatchUi.SLIDE_UP);
+	}
+	
+	function kodiEnter()
+	{
+		mKodiCaller.call("Input.Select", null);
+	}
+	
+	function kodiUp()
+	{
+		mKodiCaller.call("Input.Up", null);
+	}
+	
+	function kodiVolUp()
+	{
+	
+	}
+	
+	function kodiRight()
+	{
+		mKodiCaller.call("Input.Right", null);
+	}
+	
+	function kodiDown()
+	{
+		mKodiCaller.call("Input.Down", null);
+	}
+	
+	function kodiBack()
+	{
+		mKodiCaller.call("Input.Back", null);
+	}
+	
+	function kodiLeft()
+	{
+		mKodiCaller.call("Input.Left", null);
+	}
+	
+	function kodiVolDown()
+	{
+		// TODO
+	}
+	
+	function kodiMusic()
+	{
+		// TODO
+	}
+	
+	
+	function toKodi()
+	{
+		var view = new CircleButtonView();
+		view.doShowAnimation(false);
+		view.setLineColor(0x3eb7ed);
+		view.setCenter(Rez.Drawables.enter, method(:kodiEnter));
+		view.addButton(Rez.Drawables.up, method(:kodiUp));
+		view.addButton(Rez.Drawables.vol_up, method(:kodiVolUp));
+		view.addButton(Rez.Drawables.right, method(:kodiRight));
+		view.addButton(Rez.Drawables.forth, method(:kodiMusic));
+		view.addButton(Rez.Drawables.down, method(:kodiDown));
+		view.addButton(Rez.Drawables.back, method(:kodiBack));
+		view.addButton(Rez.Drawables.left, method(:kodiLeft));
+		view.addButton(Rez.Drawables.vol_down, method(:kodiVolDown));
+		WatchUi.pushView(view, view.getDelegate(), WatchUi.SLIDE_UP);
 	}
 
 	// Return the initial view of your application here
@@ -228,7 +293,7 @@ class HasclApp extends Application.AppBase {
 		var view = new CircleButtonView();
 		view.doShowAnimation(false);
 		view.setLineColor(0x3eb7ed);
-		view.setCenter(Rez.Drawables.hass);
+		view.setCenter(Rez.Drawables.hass, null);
 		view.addButton(Rez.Drawables.user, method(:toUser));
 		if (mLegacyCaller.isValid())
 		{
@@ -237,6 +302,7 @@ class HasclApp extends Application.AppBase {
 		}
 		view.addButton(Rez.Drawables.paint_pallet, method(:toScene));
 		view.addButton(Rez.Drawables.switches, method(:toSwitches));
+		view.addButton(Rez.Drawables.kodi, method(:toKodi));
 		return [ view, view.getDelegate() ];
 	}
 

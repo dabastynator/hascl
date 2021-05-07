@@ -1,11 +1,10 @@
 using Toybox.WatchUi;
 using Toybox.Application.Properties;
 
-class MusicDelegate extends WatchUi.BehaviorDelegate {
+class LegacyMusicDelegate extends WatchUi.BehaviorDelegate {
 
 	var mCaller = null;
 	var mMusicView = null;
-	var mUpdateCallback = null;
 	var mVolumeDelta = 10;
 
 	function initialize(musicView)
@@ -15,13 +14,47 @@ class MusicDelegate extends WatchUi.BehaviorDelegate {
 		var music = Properties.getValue("legacy_musicunit");
 		mCaller.setDefaultParameter("player=mplayer&id=" + music);
 		mMusicView = musicView;
-		mUpdateCallback = mMusicView.method(:onUpdateMusic);
 		updatePlaying();
+	}
+	
+	function onUpdateMusic(code, data)
+	{
+		var artist = "---";
+		var title = "---";
+		var playing = false;
+		var current = null;
+		if ((data instanceof Array) and (data.size() > 0))
+		{
+			var media = data[0];
+			if (media instanceof Dictionary)
+			{
+				current = media["current_playing"];
+			}
+		} else {
+			current = data;
+		}
+		if (current instanceof Dictionary)
+		{
+			if (current["artist"] != null)
+			{
+				artist = current["artist"];
+			}
+			if (current["title"] != null)
+			{
+				title = current["title"];
+			}
+			if ("PLAY".equals(current["state"]))
+			{
+				playing = true;
+			}
+			mMusicView.setVolume(current["volume"]);
+		}
+		mMusicView.setContent(artist, title, playing);
 	}
 
 	function updatePlaying()
 	{
-		mCaller.call("/mediaserver/list", "", mUpdateCallback);
+		mCaller.call("/mediaserver/list", "", method(:onUpdateMusic));
 	}
 
 	function showVolume(code, data)
@@ -62,13 +95,13 @@ class MusicDelegate extends WatchUi.BehaviorDelegate {
 		{
 			if (coords[0] < width / 3)
 			{
-				mCaller.call("/mediaserver/stop", "", mUpdateCallback);
+				mCaller.call("/mediaserver/stop", "", method(:onUpdateMusic));
 			} else if (coords[0] < 2 * width / 3)
 			{
-				mCaller.call("/mediaserver/play_pause", "", mUpdateCallback);
+				mCaller.call("/mediaserver/play_pause", "", method(:onUpdateMusic));
 			} else
 			{
-				mCaller.call("/mediaserver/next", "", mUpdateCallback);
+				mCaller.call("/mediaserver/next", "", method(:onUpdateMusic));
 			}
 		} else {
 			if (coords[0] < width / 2)
@@ -85,7 +118,7 @@ class MusicDelegate extends WatchUi.BehaviorDelegate {
 	{
 		if (event.getKey() == WatchUi.KEY_ENTER)
 		{
-			mCaller.call("/mediaserver/play_pause", "", mUpdateCallback);
+			mCaller.call("/mediaserver/play_pause", "", method(:onUpdateMusic));
 		}
 		if (event.getKey() == WatchUi.KEY_UP)
 		{

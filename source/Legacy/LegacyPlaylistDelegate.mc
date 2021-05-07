@@ -37,7 +37,7 @@ class PlaylistDelegate extends WatchUi.Menu2InputDelegate {
 	function setPlaylist(code, data)
 	{
 		var view = new MusicView();
-		WatchUi.pushView(view, new MusicDelegate(view), WatchUi.SLIDE_UP);
+		WatchUi.pushView(view, new LegacyMusicDelegate(view), WatchUi.SLIDE_UP);
 	}
 	
 	function onSelect(item)
