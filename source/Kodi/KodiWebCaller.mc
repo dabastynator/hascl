@@ -64,13 +64,26 @@ class KodiWebCaller {
 		}
 	}
 	
-	function call(method, callback)
+	function callParam(method, param, callback)
 	{
-		mCallback = callback;		
+		mCallback = callback;
 		System.println("Call: " + mUrl);
 		var parameter = {
-		    "jsonrpc" => "2.0", 
-		    "method" => method, 
+		    "jsonrpc" => "2.0",
+		    "method" => method,
+		    "id" => 1,
+		};
+		parameter["params"] = param;
+		Communications.makeWebRequest(mUrl, parameter, mOptions, method(:onReceive));
+	}
+
+	function call(method, callback)
+	{
+		mCallback = callback;
+		System.println("Call: " + mUrl);
+		var parameter = {
+		    "jsonrpc" => "2.0",
+		    "method" => method,
 		    "id" => 1
 		};		
 		Communications.makeWebRequest(mUrl, parameter, mOptions, method(:onReceive));

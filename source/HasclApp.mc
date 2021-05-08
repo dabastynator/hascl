@@ -236,7 +236,7 @@ class HasclApp extends Application.AppBase {
 	
 	function kodiVolUp()
 	{
-	
+		mKodiCaller.callParam("Application.SetVolume", {"volume" => "increment"}, null);
 	}
 	
 	function kodiRight()
@@ -261,7 +261,7 @@ class HasclApp extends Application.AppBase {
 	
 	function kodiVolDown()
 	{
-		// TODO
+		mKodiCaller.callParam("Application.SetVolume", {"volume" => "decrement"}, null);
 	}
 	
 	function kodiMusic()
