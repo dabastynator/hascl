@@ -1,5 +1,6 @@
 using Toybox.WatchUi;
 using Toybox.Graphics;
+using Toybox.Attention;
 
 class CircleButtonDelegate extends WatchUi.BehaviorDelegate {
 
@@ -43,6 +44,7 @@ class CircleButtonDelegate extends WatchUi.BehaviorDelegate {
 		coords[0] = coords[0] - mView.Width / 2;
 		coords[1] = coords[1] - mView.Height / 2;
 		var maxDot = 0;
+		var index = -1;
 		var callback = null;
 		for (var i = 0; i < mCallbacks.size(); i++) {
 			var sin = Math.sin(2*i*Math.PI / mCallbacks.size());
@@ -52,14 +54,26 @@ class CircleButtonDelegate extends WatchUi.BehaviorDelegate {
 			{
 				maxDot = dot;
 				callback = mCallbacks[i];
+				index = i;
 			}
 		}
 		if (Math.sqrt(coords[0]*coords[0] + coords[1]*coords[1]) < mView.Width / 5)
 		{
 			callback = mCenterCallback;
+			index = -1;
 		}
 		if (callback != null)
 		{
+			if (index > -1)
+			{
+				mView.setIndex(index);
+			}
+			if (Attention has :vibrate) {
+				var vibeData = [
+					new Attention.VibeProfile(25, 100), // On for 100 ms
+				];
+				Attention.vibrate(vibeData);
+			}
 			callback.invoke();
 		}
 	}
@@ -207,6 +221,10 @@ class CircleButtonView extends WatchUi.View {
 	
 	function setIndex(index)
 	{
+		if (mIndex == index)
+		{
+			return;
+		}
 		mIndex = index;
 		var newArcAngle = calcArcAngle(mIndex);
 		while (newArcAngle - mArcAngle > 180)
@@ -216,7 +234,7 @@ class CircleButtonView extends WatchUi.View {
 		while (newArcAngle - mArcAngle < -180)
 		{
 			newArcAngle = newArcAngle + 360;
-		} 
+		}
 		WatchUi.requestUpdate();
 		WatchUi.cancelAllAnimations();
 		WatchUi.animate(self, :mArcAngle, WatchUi.ANIM_TYPE_EASE_OUT, mArcAngle, newArcAngle, 0.3, null);
