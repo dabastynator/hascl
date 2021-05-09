@@ -218,7 +218,7 @@ class HasclApp extends Application.AppBase {
 		}
 	}
 	
-	function toMusic()
+	function toLegacyMusic()
 	{
 		var view = new MusicView();
 		WatchUi.pushView(view, new LegacyMusicDelegate(view), WatchUi.SLIDE_UP);
@@ -266,7 +266,8 @@ class HasclApp extends Application.AppBase {
 	
 	function kodiMusic()
 	{
-		// TODO
+		var view = new MusicView();
+		WatchUi.pushView(view, new KodiMusicDelegate(view), WatchUi.SLIDE_UP);
 	}
 	
 	
@@ -298,7 +299,7 @@ class HasclApp extends Application.AppBase {
 		if (mLegacyCaller.isValid())
 		{
 			view.addButton(Rez.Drawables.playlist, method(:toPlaylists));
-			view.addButton(Rez.Drawables.headphone, method(:toMusic));
+			view.addButton(Rez.Drawables.headphone, method(:toLegacyMusic));
 		}
 		view.addButton(Rez.Drawables.paint_pallet, method(:toScene));
 		view.addButton(Rez.Drawables.switches, method(:toSwitches));
