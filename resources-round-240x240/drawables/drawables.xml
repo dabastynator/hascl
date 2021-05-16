@@ -19,5 +19,5 @@
     <bitmap id="right" filename="right.png" />
     <bitmap id="enter" filename="enter.png" />
     <bitmap id="back" filename="back.png" />
-    <bitmap id="forth" filename="forth.png" />
+    <bitmap id="player" filename="player.png" />
 </drawables>
