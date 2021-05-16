@@ -209,8 +209,8 @@ class MusicView extends WatchUi.View {
 
 	function setContent(artist, title, playing)
 	{
-		mButtons[1].visible(playing);
-		mButtons[2].visible(!playing);
+		mButtons[1].visible(!playing);
+		mButtons[2].visible(playing);
 		if (WatchUi has :cancelAllAnimations)
 		{
 			WatchUi.cancelAllAnimations();

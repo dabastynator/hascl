@@ -88,7 +88,7 @@ class CircleButtonView extends WatchUi.View {
 	private var mImages = [];
 	private var mIndex = 0;
 	public var mArcAngle = 0;
-	private var mMargin = 0;
+	private var mMargin = 0.15;
 	private var mCenterImage = null;
 	private var mShowAnimation = false;
 	public var mAppearAnimation = 0;
@@ -141,6 +141,11 @@ class CircleButtonView extends WatchUi.View {
 	{
 		mShowAnimation = animation;
 	}
+	
+	function setMargin(margin)
+	{
+		mMargin = margin;
+	}
 
 	// Add a resource like Rez.Drawables.id_monkey
 	function addButton(resource, callback)
@@ -173,7 +178,7 @@ class CircleButtonView extends WatchUi.View {
 		Height = dc.getHeight();
 		var centerX = dc.getWidth() / 2;
 		var centerY = dc.getHeight() / 2;
-		mMargin = 0.15 * Width;
+		var margin = mMargin * Width;
 	 
 		dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
 		dc.clear();
@@ -193,8 +198,8 @@ class CircleButtonView extends WatchUi.View {
 			var sin = Math.sin(angle);
 			var cos = -Math.cos(angle);
 			var marginFactor = 2 * smootherstep(1.5 * (mAppearAnimation * 2 - 1.0 * i / mImages.size())) - 1;
-			var offX = sin * (centerX - mMargin * marginFactor);
-			var offY = cos * (centerY - mMargin * marginFactor);
+			var offX = sin * (centerX - margin * marginFactor);
+			var offY = cos * (centerY - margin * marginFactor);
 			dc.drawBitmap( centerX + offX - image.getWidth() / 2, centerY + offY - image.getHeight() / 2, image );
 			
 			angle = 2 * (i + 0.5) * Math.PI / mImages.size();

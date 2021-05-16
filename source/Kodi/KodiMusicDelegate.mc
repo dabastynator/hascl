@@ -29,6 +29,15 @@ class KodiMusicDelegate extends WatchUi.BehaviorDelegate {
 				artist = result["player.artist"];
 				title = result["player.title"];
 				volume = result["player.volume"];
+				if (artist.length() == 0)
+				{
+					artist = result["player.filename"];
+				}
+				else if (title.length() == 0)
+				{
+					title = result["player.filename"];
+				}
+				playing = !"0.00".equals(result["player.playspeed"]);
 			}
 		}
 		//mMusicView.setVolume(volume);
@@ -37,7 +46,7 @@ class KodiMusicDelegate extends WatchUi.BehaviorDelegate {
 
 	function updatePlaying()
 	{
-		mCaller.callParam("XBMC.GetInfoLabels", {"labels" => ["player.title", "player.artist", "player.volume"]}, method(:onUpdateMusic));
+		mCaller.callParam("XBMC.GetInfoLabels", {"labels" => ["player.title", "player.artist", "player.filename", "player.volume", "player.playspeed"]}, method(:onUpdateMusic));
 	}
 
 	function showVolume(code, data)
@@ -49,13 +58,11 @@ class KodiMusicDelegate extends WatchUi.BehaviorDelegate {
 		}
 	}
 	
-	function onStop(code, data)
+	function onCallUpdate(code, data)
 	{
+		updatePlaying();
 	}
-	
-	function onPlayPause(code, data)
-	{
-	}
+
 
 	function onTap (event)
 	{
@@ -69,15 +76,13 @@ class KodiMusicDelegate extends WatchUi.BehaviorDelegate {
 		{
 			if (coords[0] < width / 3)
 			{
-				mCaller.callParam("Player.Stop", {"playerid" => 0}, method(:onStop));
+				mCaller.callParam("Player.Stop", {"playerid" => 0}, method(:onCallUpdate));
 			} else if (coords[0] < 2 * width / 3)
 			{
-				mCaller.callParam("Player.PlayPause", {"playerid" => 0}, method(:onPlayPause));
-				//mCaller.call("/mediaserver/play_pause", "", mUpdateCallback);
+				mCaller.callParam("Player.PlayPause", {"playerid" => 0}, method(:onCallUpdate));
 			} else
 			{
-				mCaller.callParam("Player.GoTo", {"playerid" => 0, "to" => "next"}, null);
-				//mCaller.call("/mediaserver/next", "", mUpdateCallback);
+				mCaller.callParam("Player.GoTo", {"playerid" => 0, "to" => "next"}, method(:onCallUpdate));
 			}
 		} else {
 			if (coords[0] < width / 2)

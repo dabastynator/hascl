@@ -275,12 +275,13 @@ class HasclApp extends Application.AppBase {
 	{
 		var view = new CircleButtonView();
 		view.doShowAnimation(false);
-		view.setLineColor(0x3eb7ed);
+		view.setLineColor(0x12b2e7);
+		view.setMargin(0.16);
 		view.setCenter(Rez.Drawables.enter, method(:kodiEnter));
 		view.addButton(Rez.Drawables.up, method(:kodiUp));
 		view.addButton(Rez.Drawables.vol_up, method(:kodiVolUp));
 		view.addButton(Rez.Drawables.right, method(:kodiRight));
-		view.addButton(Rez.Drawables.forth, method(:kodiMusic));
+		view.addButton(Rez.Drawables.player, method(:kodiMusic));
 		view.addButton(Rez.Drawables.down, method(:kodiDown));
 		view.addButton(Rez.Drawables.back, method(:kodiBack));
 		view.addButton(Rez.Drawables.left, method(:kodiLeft));
