@@ -1,5 +1,6 @@
 using Toybox.WatchUi;
 using Toybox.Application.Properties;
+using Toybox.Attention;
 
 class LegacyMusicDelegate extends WatchUi.BehaviorDelegate {
 
@@ -85,6 +86,12 @@ class LegacyMusicDelegate extends WatchUi.BehaviorDelegate {
 
 	function onTap (event)
 	{
+		if (Attention has :vibrate) {
+			var vibeData = [
+				new Attention.VibeProfile(25, 100), // On for 100 ms
+			];
+			Attention.vibrate(vibeData);
+		}
 		var width = CircleButtonView.Width;
 		var height = CircleButtonView.Height;
 		var coords = event.getCoordinates();

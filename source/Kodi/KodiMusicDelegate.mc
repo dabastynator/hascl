@@ -1,5 +1,6 @@
 using Toybox.WatchUi;
 using Toybox.Application.Properties;
+using Toybox.Attention;
 
 class KodiMusicDelegate extends WatchUi.BehaviorDelegate {
 
@@ -66,6 +67,12 @@ class KodiMusicDelegate extends WatchUi.BehaviorDelegate {
 
 	function onTap (event)
 	{
+		if (Attention has :vibrate) {
+			var vibeData = [
+				new Attention.VibeProfile(25, 100), // On for 100 ms
+			];
+			Attention.vibrate(vibeData);
+		}
 		var width = CircleButtonView.Width;
 		var height = CircleButtonView.Height;
 		var coords = event.getCoordinates();
@@ -99,15 +106,15 @@ class KodiMusicDelegate extends WatchUi.BehaviorDelegate {
 	{
 		if (event.getKey() == WatchUi.KEY_ENTER)
 		{
-			//mCaller.call("/mediaserver/play_pause", "", mUpdateCallback);
+			mCaller.callParam("Player.PlayPause", {"playerid" => 0}, method(:onCallUpdate));
 		}
 		if (event.getKey() == WatchUi.KEY_UP)
 		{
-			//mCaller.call("/mediaserver/delta_volume", "delta=" + (+mVolumeDelta), method(:showVolume));
+			mCaller.callParam("Application.SetVolume", {"volume" => "increment"}, method(:showVolume));
 		}
 		if (event.getKey() == WatchUi.KEY_DOWN)
 		{
-			//mCaller.call("/mediaserver/delta_volume", "delta=" + (-mVolumeDelta), method(:showVolume));
+			mCaller.callParam("Application.SetVolume", {"volume" => "decrement"}, method(:showVolume));
 		}
 	}
 
