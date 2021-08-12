@@ -83,6 +83,7 @@ class Alert extends Ui.View {
 		var firstChar = 0;
 		var lastChar = 0;
 		var newStr = "";
+		var offset = 0;
 		mLines = 1;
 		
 		if(strLen == 0){return "";}
@@ -92,19 +93,23 @@ class Alert extends Ui.View {
 			if(char.equals("\n"))
 			{
 				mLines += 1;
+				lastChar = i;
+				offset = 1;
 			}
-			if(char.equals(" ") || i == strLen)
+			if(char.equals(" "))
 			{
-				if(dc.getTextWidthInPixels(str.substring(firstChar, i), font) < width)
+				lastChar = i;
+			}
+			if(dc.getTextWidthInPixels(str.substring(firstChar, i), font) > width)
+			{
+				if(firstChar >= lastChar - 1)
 				{
 					lastChar = i;
+					offset = 0;
 				}
-				else
-				{
-					newStr += str.substring(firstChar, lastChar) + "\n";
-					firstChar = lastChar + 1;
-					mLines += 1;
-				}
+				newStr += str.substring(firstChar, lastChar) + "\n";
+				firstChar = lastChar + offset;
+				mLines += 1;
 			}
 		}
 		newStr += str.substring(firstChar, strLen);
@@ -115,7 +120,7 @@ class Alert extends Ui.View {
 	
 		if (!mWrapped)
 		{
-			text = splitString(dc, font, text, 4);
+			text = splitString(dc, font, text, 25);
 			mWrapped = true;
 		}	
 	
