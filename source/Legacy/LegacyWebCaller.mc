@@ -30,8 +30,8 @@ class LegacyWebCaller {
 		{
 			var alert = new Alert({
 				:timeout => 8000,
-				:font => Graphics.FONT_MEDIUM,
-				:text => "Error " + responseCode + "\nEnsure a running server and correct app settings.",
+				:font => Graphics.FONT_SMALL,
+				:text => mUrl + " returned " + responseCode + "\nEnsure a running server and correct app settings.",
 				:fgcolor => Graphics.COLOR_RED,
 				:bgcolor => Graphics.COLOR_BLACK
 				});
